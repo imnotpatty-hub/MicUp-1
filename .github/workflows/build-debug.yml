@@ -1,4 +1,4 @@
-name: Build Debug APK
+name: Build APK
 
 on:
   workflow_dispatch:
@@ -8,33 +8,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Set up JDK 17
+      - name: Java
         uses: actions/setup-java@v6
         with:
+          distribution: temurin
           java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
 
-      - name: Set up Android SDK
+      - name: Android
         uses: android-actions/setup-android@v4
 
-      - name: Install NDK and CMake
-        run: sdkmanager "ndk;26.3.11579264" "cmake;3.22.1"
+      - name: Build
+        run: ./gradlew assembleDebug
 
-      - name: Build APK
-        run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon
-
-      - name: Upload APK
+      - name: APK
         uses: actions/upload-artifact@v4
         with:
-          name: MicUp-debug
-          path: app/build/outputs/apk/debug/app-debug.apk          ANDROID_NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}/ndk/26.3.11579264
-        run: ./gradlew assembleDebug --no-daemon
-
-      - name: Upload APK
+          name: MicUp-APK
+          path: app/build/outputs/apk/debug/app-debug.apk      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MicUp-debug
